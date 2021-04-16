@@ -1,0 +1,18 @@
+fragment ChatData on Chat {
+  _id
+  name
+  isPublic
+  updatedAt
+  memberIds
+  adminIds
+  lastMessage {
+    _id
+    sender {
+      _id
+      firstName
+      lastName
+    }
+    createdAt
+    text
+  }
+}

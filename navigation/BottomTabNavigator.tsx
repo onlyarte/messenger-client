@@ -22,14 +22,14 @@ export default function BottomTabNavigator() {
         name="Chats"
         component={ChatsNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="ios-chatbubbles" color={color} />,
         }}
       />
       <BottomTab.Screen
         name="Settings"
         component={SettingsNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="ios-settings" color={color} />,
         }}
       />
     </BottomTab.Navigator>
