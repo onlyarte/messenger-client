@@ -6,7 +6,7 @@ import { Text, View } from '../components/Themed';
 
 import { useChatsQuery } from '../codegen/generated/graphql';
 
-export default function TabOneScreen() {
+export default function ChatsScreen() {
   const { data, loading, error } = useChatsQuery();
 
   console.log(data, loading, JSON.stringify(error));
