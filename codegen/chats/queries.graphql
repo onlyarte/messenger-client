@@ -3,3 +3,9 @@ query Chats {
     ...ChatData
   }
 }
+
+query Chat($chatId: ID!) {
+  chat(id: $chatId) {
+    ...ChatData
+  }
+}

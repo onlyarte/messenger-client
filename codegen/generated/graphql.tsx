@@ -244,6 +244,55 @@ export type ChatsQuery = (
   )> }
 );
 
+export type ChatQueryVariables = Exact<{
+  chatId: Scalars['ID'];
+}>;
+
+
+export type ChatQuery = (
+  { __typename?: 'Query' }
+  & { chat: (
+    { __typename?: 'Chat' }
+    & ChatDataFragment
+  ) }
+);
+
+export type MessageDataFragment = (
+  { __typename?: 'Message' }
+  & Pick<Message, '_id' | 'text' | 'createdAt' | 'isNew'>
+  & { sender: (
+    { __typename?: 'User' }
+    & Pick<User, '_id' | 'fullName'>
+  ) }
+);
+
+export type SendMessageMutationVariables = Exact<{
+  chatId: Scalars['ID'];
+  text: Scalars['String'];
+}>;
+
+
+export type SendMessageMutation = (
+  { __typename?: 'Mutation' }
+  & { sendMessage: (
+    { __typename?: 'Message' }
+    & MessageDataFragment
+  ) }
+);
+
+export type MessagesQueryVariables = Exact<{
+  chatId: Scalars['ID'];
+}>;
+
+
+export type MessagesQuery = (
+  { __typename?: 'Query' }
+  & { messages: Array<(
+    { __typename?: 'Message' }
+    & MessageDataFragment
+  )> }
+);
+
 export const ChatDataFragmentDoc = gql`
     fragment ChatData on Chat {
   _id
@@ -262,6 +311,18 @@ export const ChatDataFragmentDoc = gql`
     createdAt
     text
   }
+}
+    `;
+export const MessageDataFragmentDoc = gql`
+    fragment MessageData on Message {
+  _id
+  sender {
+    _id
+    fullName
+  }
+  text
+  createdAt
+  isNew
 }
     `;
 export const LoginDocument = gql`
@@ -337,3 +398,107 @@ export function useChatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Chat
 export type ChatsQueryHookResult = ReturnType<typeof useChatsQuery>;
 export type ChatsLazyQueryHookResult = ReturnType<typeof useChatsLazyQuery>;
 export type ChatsQueryResult = Apollo.QueryResult<ChatsQuery, ChatsQueryVariables>;
+export const ChatDocument = gql`
+    query Chat($chatId: ID!) {
+  chat(id: $chatId) {
+    ...ChatData
+  }
+}
+    ${ChatDataFragmentDoc}`;
+
+/**
+ * __useChatQuery__
+ *
+ * To run a query within a React component, call `useChatQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChatQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChatQuery({
+ *   variables: {
+ *      chatId: // value for 'chatId'
+ *   },
+ * });
+ */
+export function useChatQuery(baseOptions: Apollo.QueryHookOptions<ChatQuery, ChatQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ChatQuery, ChatQueryVariables>(ChatDocument, options);
+      }
+export function useChatLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChatQuery, ChatQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ChatQuery, ChatQueryVariables>(ChatDocument, options);
+        }
+export type ChatQueryHookResult = ReturnType<typeof useChatQuery>;
+export type ChatLazyQueryHookResult = ReturnType<typeof useChatLazyQuery>;
+export type ChatQueryResult = Apollo.QueryResult<ChatQuery, ChatQueryVariables>;
+export const SendMessageDocument = gql`
+    mutation SendMessage($chatId: ID!, $text: String!) {
+  sendMessage(chat: $chatId, text: $text) {
+    ...MessageData
+  }
+}
+    ${MessageDataFragmentDoc}`;
+export type SendMessageMutationFn = Apollo.MutationFunction<SendMessageMutation, SendMessageMutationVariables>;
+
+/**
+ * __useSendMessageMutation__
+ *
+ * To run a mutation, you first call `useSendMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendMessageMutation, { data, loading, error }] = useSendMessageMutation({
+ *   variables: {
+ *      chatId: // value for 'chatId'
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useSendMessageMutation(baseOptions?: Apollo.MutationHookOptions<SendMessageMutation, SendMessageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendMessageMutation, SendMessageMutationVariables>(SendMessageDocument, options);
+      }
+export type SendMessageMutationHookResult = ReturnType<typeof useSendMessageMutation>;
+export type SendMessageMutationResult = Apollo.MutationResult<SendMessageMutation>;
+export type SendMessageMutationOptions = Apollo.BaseMutationOptions<SendMessageMutation, SendMessageMutationVariables>;
+export const MessagesDocument = gql`
+    query Messages($chatId: ID!) {
+  messages(chat: $chatId) {
+    ...MessageData
+  }
+}
+    ${MessageDataFragmentDoc}`;
+
+/**
+ * __useMessagesQuery__
+ *
+ * To run a query within a React component, call `useMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMessagesQuery({
+ *   variables: {
+ *      chatId: // value for 'chatId'
+ *   },
+ * });
+ */
+export function useMessagesQuery(baseOptions: Apollo.QueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, options);
+      }
+export function useMessagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, options);
+        }
+export type MessagesQueryHookResult = ReturnType<typeof useMessagesQuery>;
+export type MessagesLazyQueryHookResult = ReturnType<typeof useMessagesLazyQuery>;
+export type MessagesQueryResult = Apollo.QueryResult<MessagesQuery, MessagesQueryVariables>;
