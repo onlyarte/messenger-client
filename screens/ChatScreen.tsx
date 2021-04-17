@@ -38,7 +38,10 @@ export default function ChatScreen({ route, navigation }: Props) {
     }
   }, [chatData?.chat]);
 
-  const { data: messagesData, refetch: refetchMessages } = useMessagesQuery({ variables: { chatId } });
+  const { data: messagesData, refetch: refetchMessages } = useMessagesQuery({
+    variables: { chatId },
+    pollInterval: 500,
+  });
 
   const [message, setMessage] = React.useState('');
   const [sendMessage] = useSendMessageMutation();

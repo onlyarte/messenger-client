@@ -28,7 +28,7 @@ type Props = {
 };
 
 export default function ChatsScreen({ navigation }: Props) {
-  const { data, loading, error } = useChatsQuery();
+  const { data, loading, error } = useChatsQuery({ pollInterval: 500 });
 
   const handleSelect = (chatId: string) => {
     navigation.navigate('Chat', { chatId });
