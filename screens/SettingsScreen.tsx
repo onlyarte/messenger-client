@@ -1,15 +1,35 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Button } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View } from '../components/Themed';
+import { View } from '../components/Themed';
 
-export default function SettingsScreen() {
+import { RootStackParamList } from '../types';
+import { AuthContext } from '../AuthContext';
+
+type LoginScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Root'
+>;
+
+type Props = {
+  navigation: LoginScreenNavigationProp;
+};
+
+export default function SettingsScreen({ navigation }: Props) {
+  const { setToken } = React.useContext(AuthContext);
+
+  const handleLogout = async () => {
+    setToken(undefined);
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabTwoScreen.js" />
+      <Button onPress={handleLogout} title="Log out" />
     </View>
   );
 }
@@ -19,14 +39,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
   },
 });

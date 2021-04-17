@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { StyleSheet, Button, Alert } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Text, View, TextInput } from '../components/Themed';
 
 import { RootStackParamList } from '../types';
 import { useLoginMutation } from '../codegen/generated/graphql';
+import { AuthContext } from '../AuthContext';
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -18,6 +18,8 @@ type Props = {
 };
 
 export default function LoginScreen({ navigation }: Props) {
+  const { setToken } = React.useContext(AuthContext);
+
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -29,9 +31,12 @@ export default function LoginScreen({ navigation }: Props) {
     try {
       const result = await login();
       if (result.data?.login.token) {
-        await AsyncStorage.setItem('token', result.data.login.token);
+        setToken(result.data.login.token);
       }
-      navigation.navigate('Root');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Root' }],
+      });
     } catch (error) {
       Alert.alert(error.message);
     }
@@ -58,7 +63,6 @@ export default function LoginScreen({ navigation }: Props) {
       <Button
         onPress={handleSubmit}
         title="Log in"
-        // color="#841584"
       />
     </View>
   );

@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function useCachedResources() {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
-  const [authToken, setAuthToken] = React.useState<string>();
 
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
@@ -19,9 +18,6 @@ export default function useCachedResources() {
           ...Ionicons.font,
           'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
         });
-
-        const token = await AsyncStorage.getItem('token');
-        if (token) setAuthToken(token);
       } catch (e) {
         // We might want to provide this error information to an error reporting service
         console.warn(e);
@@ -34,5 +30,5 @@ export default function useCachedResources() {
     loadResourcesAndDataAsync();
   }, []);
 
-  return [isLoadingComplete, authToken];
+  return isLoadingComplete;
 }
