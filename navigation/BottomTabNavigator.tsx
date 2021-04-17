@@ -3,11 +3,17 @@ import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
 import ChatsScreen from '../screens/ChatsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import { BottomTabParamList, ChatsParamList, SettingsParamList } from '../types';
+
+import {
+  BottomTabParamList,
+  ChatsParamList,
+  SettingsParamList,
+} from '../types';
+
+import Colors from '../constants/Colors';
+import useColorScheme from '../hooks/useColorScheme';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -17,19 +23,24 @@ export default function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       initialRouteName="Chats"
-      tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}>
+      tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
+    >
       <BottomTab.Screen
         name="Chats"
         component={ChatsNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-chatbubbles" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="ios-chatbubbles" color={color} />
+          ),
         }}
       />
       <BottomTab.Screen
         name="Settings"
         component={SettingsNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-settings" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="ios-settings" color={color} />
+          ),
         }}
       />
     </BottomTab.Navigator>

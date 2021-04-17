@@ -1,8 +1,14 @@
 import * as React from 'react';
-import { StyleSheet, Platform, Button, Alert, KeyboardAvoidingView } from 'react-native';
+import {
+  StyleSheet,
+  Platform,
+  Button,
+  Alert,
+  KeyboardAvoidingView,
+} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import { Text, View, TextInput } from '../components/Themed';
+import { Text, TextInput } from '../components/Themed';
 
 import { RootStackParamList } from '../types';
 import { useLoginMutation } from '../codegen/generated/graphql';
@@ -43,7 +49,10 @@ export default function LoginScreen({ navigation }: Props) {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS == 'ios' ? 'padding' : 'height'} style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
       <Text style={styles.title}>Login</Text>
       <TextInput
         placeholder="Username"
@@ -62,10 +71,7 @@ export default function LoginScreen({ navigation }: Props) {
         returnKeyType="go"
         onSubmitEditing={handleSubmit}
       />
-      <Button
-        onPress={handleSubmit}
-        title="Log in"
-      />
+      <Button onPress={handleSubmit} title="Log in" />
     </KeyboardAvoidingView>
   );
 }

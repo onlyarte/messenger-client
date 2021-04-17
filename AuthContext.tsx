@@ -5,7 +5,6 @@ export type AuthContextValue = {
   token?: string;
   setToken: React.Dispatch<React.SetStateAction<string | undefined>>;
   isInitialized: boolean;
-
 };
 
 export const AuthContext = React.createContext<AuthContextValue>({
@@ -23,11 +22,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [token, setToken] = React.useState<string>();
 
   React.useEffect(() => {
-    AsyncStorage.getItem('token')
-      .then((cached) => {
-        setToken(cached || undefined);
-        setIsInitialized(true)
-      });
+    AsyncStorage.getItem('token').then((cached) => {
+      setToken(cached || undefined);
+      setIsInitialized(true);
+    });
   }, []);
 
   React.useEffect(() => {

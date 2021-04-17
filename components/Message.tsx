@@ -14,7 +14,7 @@ export default function Message({ message, isMine }: Props) {
     <View style={[styles.message, isMine ? styles.my : styles.their]}>
       <Text style={styles.text}>{message.text}</Text>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

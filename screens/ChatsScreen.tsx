@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import { Text, View } from '../components/Themed';
@@ -7,7 +7,13 @@ import { Text, View } from '../components/Themed';
 import { RootStackParamList } from '../types';
 import { useChatsQuery, ChatDataFragment } from '../codegen/generated/graphql';
 
-function Item({ chat, onPress }: { chat: ChatDataFragment, onPress: () => void }) {
+function Item({
+  chat,
+  onPress,
+}: {
+  chat: ChatDataFragment;
+  onPress: () => void;
+}) {
   return (
     <TouchableOpacity style={styles.item} onPress={onPress}>
       <Text style={styles.title}>{chat.name}</Text>
@@ -28,7 +34,7 @@ type Props = {
 };
 
 export default function ChatsScreen({ navigation }: Props) {
-  const { data, loading, error } = useChatsQuery({ pollInterval: 500 });
+  const { data } = useChatsQuery({ pollInterval: 500 });
 
   const handleSelect = (chatId: string) => {
     navigation.navigate('Chat', { chatId });
@@ -39,7 +45,9 @@ export default function ChatsScreen({ navigation }: Props) {
       <FlatList
         data={data?.chats || []}
         keyExtractor={(item) => item._id}
-        renderItem={({ item }) => <Item chat={item} onPress={() => handleSelect(item._id)} />}
+        renderItem={({ item }) => (
+          <Item chat={item} onPress={() => handleSelect(item._id)} />
+        )}
       />
     </View>
   );

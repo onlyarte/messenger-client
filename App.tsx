@@ -2,11 +2,11 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { AuthProvider } from './AuthContext';
 import { ApolloProvider } from './ApolloContext';
+import useCachedResources from './hooks/useCachedResources';
+import useColorScheme from './hooks/useColorScheme';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -19,7 +19,7 @@ export default function App() {
       <SafeAreaProvider>
         <AuthProvider>
           <ApolloProvider>
-            <Navigation colorScheme={colorScheme}/>
+            <Navigation colorScheme={colorScheme} />
             <StatusBar />
           </ApolloProvider>
         </AuthProvider>

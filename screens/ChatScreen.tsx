@@ -1,15 +1,26 @@
 import * as React from 'react';
-import { Platform, StyleSheet, KeyboardAvoidingView, FlatList } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  KeyboardAvoidingView,
+  FlatList,
+} from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import { useHeaderHeight } from '@react-navigation/stack';
 
 import { View, TextInput, Text } from '../components/Themed';
-
-import { RootStackParamList } from '../types';
-import { useChatQuery, useMeQuery, useMessagesQuery, useSendMessageMutation } from '../codegen/generated/graphql';
 import Message from '../components/Message';
+
+import {
+  useChatQuery,
+  useMeQuery,
+  useMessagesQuery,
+  useSendMessageMutation,
+} from '../codegen/generated/graphql';
+import { RootStackParamList } from '../types';
+
 
 type ChatScreenRouteProp = RouteProp<RootStackParamList, 'Chat'>;
 
@@ -65,12 +76,17 @@ export default function ChatScreen({ route, navigation }: Props) {
         keyExtractor={(item) => item._id}
         contentContainerStyle={styles.messages}
         renderItem={({ item }) => (
-          <Message message={item} isMine={item.sender._id === authData?.me._id} />
+          <Message
+            message={item}
+            isMine={item.sender._id === authData?.me._id}
+          />
         )}
         inverted
       />
       {!messagesData?.messages.length && (
-        <Text style={styles.text}>No messages yet. Say hi to {chatData?.chat.name}!</Text>
+        <Text style={styles.text}>
+          No messages yet. Say hi to {chatData?.chat.name}!
+        </Text>
       )}
       <View style={styles.form}>
         <TextInput
@@ -82,7 +98,11 @@ export default function ChatScreen({ route, navigation }: Props) {
           onSubmitEditing={handleSubmit}
           style={styles.input}
         />
-        <Ionicons name="md-send" onPress={handleSubmit} style={styles.iconButton} />
+        <Ionicons
+          name="md-send"
+          onPress={handleSubmit}
+          style={styles.iconButton}
+        />
       </View>
     </KeyboardAvoidingView>
   );
