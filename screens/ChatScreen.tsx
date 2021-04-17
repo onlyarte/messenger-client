@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import { useHeaderHeight } from '@react-navigation/stack';
 
-import { Text, View, TextInput } from '../components/Themed';
+import { View, TextInput, Text } from '../components/Themed';
 
 import { RootStackParamList } from '../types';
 import { useChatQuery, useMeQuery, useMessagesQuery, useSendMessageMutation } from '../codegen/generated/graphql';
@@ -66,6 +66,9 @@ export default function ChatScreen({ route, navigation }: Props) {
         )}
         inverted
       />
+      {!messagesData?.messages.length && (
+        <Text style={styles.text}>No messages yet. Say hi to {chatData?.chat.name}!</Text>
+      )}
       <View style={styles.form}>
         <TextInput
           placeholder="Send message..."
@@ -74,7 +77,6 @@ export default function ChatScreen({ route, navigation }: Props) {
           returnKeyType="send"
           enablesReturnKeyAutomatically
           onSubmitEditing={handleSubmit}
-          autoFocus
           style={styles.input}
         />
         <Ionicons name="md-send" onPress={handleSubmit} style={styles.iconButton} />
@@ -110,5 +112,11 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 30,
     color: 'blue',
+  },
+  text: {
+    alignSelf: 'center',
+    marginBottom: 8,
+    color: 'gray',
+    maxWidth: '90%',
   },
 });

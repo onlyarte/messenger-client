@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Button, Alert } from 'react-native';
+import { StyleSheet, Platform, Button, Alert, KeyboardAvoidingView } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import { Text, View, TextInput } from '../components/Themed';
@@ -43,7 +43,7 @@ export default function LoginScreen({ navigation }: Props) {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS == 'ios' ? 'padding' : 'height'} style={styles.container}>
       <Text style={styles.title}>Login</Text>
       <TextInput
         placeholder="Username"
@@ -59,12 +59,14 @@ export default function LoginScreen({ navigation }: Props) {
         autoCompleteType="password"
         secureTextEntry
         style={styles.input}
+        returnKeyType="go"
+        onSubmitEditing={handleSubmit}
       />
       <Button
         onPress={handleSubmit}
         title="Log in"
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

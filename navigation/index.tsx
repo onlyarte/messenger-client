@@ -38,7 +38,7 @@ function RootNavigator() {
   return (
     <Stack.Navigator initialRouteName={token ? 'Root' : 'Login'} screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerLeft: () => null }} />
+      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ title: 'Chats', headerLeft: () => null }} />
       <Stack.Screen name="Chat" component={ChatScreen} options={{ title: 'Chat', headerShown: true }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
     </Stack.Navigator>
