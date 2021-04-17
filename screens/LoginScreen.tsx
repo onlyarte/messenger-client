@@ -1,11 +1,23 @@
 import * as React from 'react';
 import { StyleSheet, Button, Alert } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Text, View, TextInput } from '../components/Themed';
 
+import { RootStackParamList } from '../types';
 import { useLoginMutation } from '../codegen/generated/graphql';
 
-export default function LoginScreen() {
+type LoginScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Login'
+>;
+
+type Props = {
+  navigation: LoginScreenNavigationProp;
+};
+
+export default function LoginScreen({ navigation }: Props) {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -14,8 +26,15 @@ export default function LoginScreen() {
   });
 
   const handleSubmit = async () => {
-    const result = await login();
-    Alert.alert(`Successfully logged in. Your token is ${result.data?.login.token}.`);
+    try {
+      const result = await login();
+      if (result.data?.login.token) {
+        await AsyncStorage.setItem('token', result.data.login.token);
+      }
+      navigation.navigate('Root');
+    } catch (error) {
+      Alert.alert(error.message);
+    }
   };
 
   return (
