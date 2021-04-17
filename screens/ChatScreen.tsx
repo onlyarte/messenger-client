@@ -1,13 +1,15 @@
 import * as React from 'react';
-import { StyleSheet, KeyboardAvoidingView, FlatList } from 'react-native';
+import { Platform, StyleSheet, KeyboardAvoidingView, FlatList } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
+import { useHeaderHeight } from '@react-navigation/stack';
 
 import { Text, View, TextInput } from '../components/Themed';
 
 import { RootStackParamList } from '../types';
-import { useChatQuery, useMessagesQuery, useSendMessageMutation, MessagesDocument } from '../codegen/generated/graphql';
+import { useChatQuery, useMeQuery, useMessagesQuery, useSendMessageMutation } from '../codegen/generated/graphql';
+import Message from '../components/Message';
 
 type ChatScreenRouteProp = RouteProp<RootStackParamList, 'Chat'>;
 
@@ -24,15 +26,17 @@ type Props = {
 export default function ChatScreen({ route, navigation }: Props) {
   const { chatId } = route.params;
 
-  const { data } = useChatQuery({ variables: { chatId } });
+  const { data: authData } = useMeQuery();
+
+  const { data: chatData } = useChatQuery({ variables: { chatId } });
 
   React.useEffect(() => {
-    if (data?.chat) {
+    if (chatData?.chat) {
       navigation.setOptions({
-        title: data.chat.name || undefined,
+        title: chatData.chat.name || undefined,
       });
     }
-  }, [data?.chat]);
+  }, [chatData?.chat]);
 
   const { data: messagesData, refetch: refetchMessages } = useMessagesQuery({ variables: { chatId } });
 
@@ -41,28 +45,36 @@ export default function ChatScreen({ route, navigation }: Props) {
 
   const handleSubmit = async () => {
     await sendMessage({ variables: { chatId, text: message } });
-    await refetchMessages();
+    await refetchMessages({ chatId });
     setMessage('');
   };
 
+  const headerHeight = useHeaderHeight();
+
   return (
-    <KeyboardAvoidingView behavior="height" style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={headerHeight}
+      style={styles.container}
+    >
       <FlatList
         data={messagesData?.messages || []}
         keyExtractor={(item) => item._id}
         contentContainerStyle={styles.messages}
-        renderItem={({ item: message }) => (
-          <View style={styles.message} key={message._id}>
-            <Text style={styles.text}>{message.text}</Text>
-          </View>
+        renderItem={({ item }) => (
+          <Message message={item} isMine={item.sender._id === authData?.me._id} />
         )}
+        inverted
       />
       <View style={styles.form}>
         <TextInput
           placeholder="Send message..."
           value={message}
           onChangeText={setMessage}
-          autoCompleteType="username"
+          returnKeyType="send"
+          enablesReturnKeyAutomatically
+          onSubmitEditing={handleSubmit}
+          autoFocus
           style={styles.input}
         />
         <Ionicons name="md-send" onPress={handleSubmit} style={styles.iconButton} />
@@ -73,38 +85,25 @@ export default function ChatScreen({ route, navigation }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
+    flex: 1,
     display: 'flex',
     flexDirection: 'column',
   },
   messages: {
-    flexDirection: 'column-reverse',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    padding: 15,
-  },
-  message: {
-    marginVertical: 5,
-    borderRadius: 30,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    backgroundColor: 'blue',
-  },
-  text: {
-    fontSize: 14,
-    color: 'white',
+    flexDirection: 'column',
+    padding: 10,
   },
   form: {
-    minWidth: '100%',
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
     paddingHorizontal: 7,
   },
   input: {
     flexGrow: 1,
+    maxWidth: '90%',
   },
   iconButton: {
     fontSize: 30,

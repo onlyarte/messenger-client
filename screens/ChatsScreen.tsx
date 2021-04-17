@@ -50,15 +50,10 @@ const styles = StyleSheet.create({
     height: '100%',
     overflow: 'scroll',
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
   item: {
     minWidth: '100%',
     padding: 20,
-    borderBottomColor: 'ghostwhite',
+    borderBottomColor: 'gray',
     borderBottomWidth: 1,
   },
   title: {

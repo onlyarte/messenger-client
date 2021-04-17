@@ -1,8 +1,7 @@
 fragment MessageData on Message {
   _id
   sender {
-    _id
-    fullName
+    ...UserData
   }
   text
   createdAt

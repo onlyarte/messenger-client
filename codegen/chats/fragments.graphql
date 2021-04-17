@@ -6,13 +6,6 @@ fragment ChatData on Chat {
   memberIds
   adminIds
   lastMessage {
-    _id
-    sender {
-      _id
-      firstName
-      lastName
-    }
-    createdAt
-    text
+    ...MessageData
   }
 }

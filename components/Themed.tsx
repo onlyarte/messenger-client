@@ -55,7 +55,7 @@ export function TextInput(props: TextInputProps) {
         marginVertical: 7,
         borderRadius: 20,
         paddingHorizontal: 20,
-        height: 40,
+        paddingVertical: 12,
       }, style]}
       placeholderTextColor={color}
       {...otherProps}

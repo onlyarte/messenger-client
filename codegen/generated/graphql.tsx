@@ -202,6 +202,11 @@ export type User = {
   chats: Array<Chat>;
 };
 
+export type UserDataFragment = (
+  { __typename?: 'User' }
+  & Pick<User, '_id' | 'username' | 'fullName'>
+);
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -215,8 +220,19 @@ export type LoginMutation = (
     & Pick<AuthPayload, 'token'>
     & { user: (
       { __typename?: 'User' }
-      & Pick<User, '_id' | 'firstName' | 'lastName'>
+      & UserDataFragment
     ) }
+  ) }
+);
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = (
+  { __typename?: 'Query' }
+  & { me: (
+    { __typename?: 'User' }
+    & UserDataFragment
   ) }
 );
 
@@ -225,11 +241,7 @@ export type ChatDataFragment = (
   & Pick<Chat, '_id' | 'name' | 'isPublic' | 'updatedAt' | 'memberIds' | 'adminIds'>
   & { lastMessage?: Maybe<(
     { __typename?: 'Message' }
-    & Pick<Message, '_id' | 'createdAt' | 'text'>
-    & { sender: (
-      { __typename?: 'User' }
-      & Pick<User, '_id' | 'firstName' | 'lastName'>
-    ) }
+    & MessageDataFragment
   )> }
 );
 
@@ -262,7 +274,7 @@ export type MessageDataFragment = (
   & Pick<Message, '_id' | 'text' | 'createdAt' | 'isNew'>
   & { sender: (
     { __typename?: 'User' }
-    & Pick<User, '_id' | 'fullName'>
+    & UserDataFragment
   ) }
 );
 
@@ -293,6 +305,24 @@ export type MessagesQuery = (
   )> }
 );
 
+export const UserDataFragmentDoc = gql`
+    fragment UserData on User {
+  _id
+  username
+  fullName
+}
+    `;
+export const MessageDataFragmentDoc = gql`
+    fragment MessageData on Message {
+  _id
+  sender {
+    ...UserData
+  }
+  text
+  createdAt
+  isNew
+}
+    ${UserDataFragmentDoc}`;
 export const ChatDataFragmentDoc = gql`
     fragment ChatData on Chat {
   _id
@@ -302,41 +332,20 @@ export const ChatDataFragmentDoc = gql`
   memberIds
   adminIds
   lastMessage {
-    _id
-    sender {
-      _id
-      firstName
-      lastName
-    }
-    createdAt
-    text
+    ...MessageData
   }
 }
-    `;
-export const MessageDataFragmentDoc = gql`
-    fragment MessageData on Message {
-  _id
-  sender {
-    _id
-    fullName
-  }
-  text
-  createdAt
-  isNew
-}
-    `;
+    ${MessageDataFragmentDoc}`;
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
   login(username: $username, password: $password) {
     token
     user {
-      _id
-      firstName
-      lastName
+      ...UserData
     }
   }
 }
-    `;
+    ${UserDataFragmentDoc}`;
 export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
 
 /**
@@ -364,6 +373,40 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const MeDocument = gql`
+    query Me {
+  me {
+    ...UserData
+  }
+}
+    ${UserDataFragmentDoc}`;
+
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+      }
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+        }
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const ChatsDocument = gql`
     query Chats {
   chats {

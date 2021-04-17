@@ -5,6 +5,7 @@ export type AuthContextValue = {
   token?: string;
   setToken: React.Dispatch<React.SetStateAction<string | undefined>>;
   isInitialized: boolean;
+
 };
 
 export const AuthContext = React.createContext<AuthContextValue>({
