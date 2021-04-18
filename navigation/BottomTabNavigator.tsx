@@ -13,11 +13,30 @@ import {
 } from '../types';
 
 import Colors from '../constants/Colors';
+import useNotifications from '../hooks/useNotifications';
 import useColorScheme from '../hooks/useColorScheme';
+import { useNewMessageSubscription } from '../codegen/generated/graphql';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
 export default function BottomTabNavigator() {
+  const sendNotification = useNotifications();
+
+  const { data } = useNewMessageSubscription();
+
+  React.useEffect(() => {
+    if (data) {
+      sendNotification({
+        content: {
+          title: `New message from ${data.newMessage.sender.fullName}`,
+          body: data.newMessage.text || '📎 attachment',
+          data: { data: 'goes here' },
+        },
+        trigger: null,
+      });
+    }
+  }, [data]);
+
   const colorScheme = useColorScheme();
 
   return (
