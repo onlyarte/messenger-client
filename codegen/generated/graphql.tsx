@@ -73,6 +73,7 @@ export type Mutation = {
   renameChat: Chat;
   sendMessage: Message;
   readMessages: Array<Message>;
+  subscribeToNotifications: Scalars['Boolean'];
 };
 
 
@@ -136,6 +137,11 @@ export type MutationSendMessageArgs = {
 export type MutationReadMessagesArgs = {
   chat: Scalars['ID'];
   messages: Array<Scalars['ID']>;
+};
+
+
+export type MutationSubscribeToNotificationsArgs = {
+  pushToken: Scalars['String'];
 };
 
 export type Query = {
@@ -223,6 +229,16 @@ export type LoginMutation = (
       & UserDataFragment
     ) }
   ) }
+);
+
+export type SubscribeToNotificationsMutationVariables = Exact<{
+  pushToken: Scalars['String'];
+}>;
+
+
+export type SubscribeToNotificationsMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'subscribeToNotifications'>
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -386,6 +402,37 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const SubscribeToNotificationsDocument = gql`
+    mutation SubscribeToNotifications($pushToken: String!) {
+  subscribeToNotifications(pushToken: $pushToken)
+}
+    `;
+export type SubscribeToNotificationsMutationFn = Apollo.MutationFunction<SubscribeToNotificationsMutation, SubscribeToNotificationsMutationVariables>;
+
+/**
+ * __useSubscribeToNotificationsMutation__
+ *
+ * To run a mutation, you first call `useSubscribeToNotificationsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubscribeToNotificationsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [subscribeToNotificationsMutation, { data, loading, error }] = useSubscribeToNotificationsMutation({
+ *   variables: {
+ *      pushToken: // value for 'pushToken'
+ *   },
+ * });
+ */
+export function useSubscribeToNotificationsMutation(baseOptions?: Apollo.MutationHookOptions<SubscribeToNotificationsMutation, SubscribeToNotificationsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SubscribeToNotificationsMutation, SubscribeToNotificationsMutationVariables>(SubscribeToNotificationsDocument, options);
+      }
+export type SubscribeToNotificationsMutationHookResult = ReturnType<typeof useSubscribeToNotificationsMutation>;
+export type SubscribeToNotificationsMutationResult = Apollo.MutationResult<SubscribeToNotificationsMutation>;
+export type SubscribeToNotificationsMutationOptions = Apollo.BaseMutationOptions<SubscribeToNotificationsMutation, SubscribeToNotificationsMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {

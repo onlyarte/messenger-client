@@ -6,3 +6,7 @@ mutation Login($username: String!, $password: String!) {
     }
   }
 }
+
+mutation SubscribeToNotifications($pushToken: String!) {
+  subscribeToNotifications(pushToken: $pushToken)
+}

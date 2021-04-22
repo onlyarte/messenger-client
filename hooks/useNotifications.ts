@@ -4,6 +4,8 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { Subscription } from '@unimodules/core';
 
+import { useSubscribeToNotificationsMutation } from '../codegen/generated/graphql';
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -15,7 +17,9 @@ Notifications.setNotificationHandler({
 async function registerForPushNotificationsAsync() {
   let token;
   if (Constants.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const {
+      status: existingStatus,
+    } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
     if (existingStatus !== 'granted') {
       const { status } = await Notifications.requestPermissionsAsync();
@@ -45,28 +49,41 @@ async function registerForPushNotificationsAsync() {
 
 export default function useNotifications() {
   const [expoPushToken, setExpoPushToken] = React.useState<string>();
-  const [notification, setNotification] = React.useState<Notifications.Notification>();
+  const [
+    notification,
+    setNotification,
+  ] = React.useState<Notifications.Notification>();
   const notificationListener = React.useRef<Subscription>();
   const responseListener = React.useRef<Subscription>();
-
-  console.log(expoPushToken);
+  const [subscribeToNotifications] = useSubscribeToNotificationsMutation();
 
   React.useEffect(() => {
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
+    registerForPushNotificationsAsync().then((token) => {
+      setExpoPushToken(token);
+      if (token) {
+        subscribeToNotifications({ variables: { pushToken: token } });
+      }
     });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
+    notificationListener.current = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        setNotification(notification);
+      }
+    );
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        console.log(response);
+      }
+    );
 
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current!);
+      Notifications.removeNotificationSubscription(
+        notificationListener.current!
+      );
       Notifications.removeNotificationSubscription(responseListener.current!);
     };
   }, []);
 
-  return Notifications.scheduleNotificationAsync;
+  return Notifications;
 }
