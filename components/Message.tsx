@@ -4,14 +4,32 @@ import { Text, View } from '../components/Themed';
 import { MessageDataFragment } from '../codegen/generated/graphql';
 import { transparentize } from 'polished';
 
+import useColorScheme from '../hooks/useColorScheme';
+import Colors from '../constants/Colors';
+
 type Props = {
   message: MessageDataFragment;
   isMine: boolean;
 };
 
 export default function Message({ message, isMine }: Props) {
+  const colorScheme = useColorScheme();
+
   return (
-    <View style={[styles.message, isMine ? styles.my : styles.their]}>
+    <View
+      style={[
+        styles.message,
+        isMine
+          ? {
+              alignSelf: 'flex-end',
+              backgroundColor: Colors[colorScheme].gray2,
+            }
+          : {
+              alignSelf: 'flex-start',
+              backgroundColor: Colors[colorScheme].blue,
+            },
+      ]}
+    >
       <Text style={styles.text}>{message.text}</Text>
     </View>
   );
@@ -25,16 +43,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     maxWidth: '80%',
   },
-  my: {
-    alignSelf: 'flex-end',
-    backgroundColor: transparentize(0.7, '#808080'),
-  },
-  their: {
-    alignSelf: 'flex-start',
-    backgroundColor: transparentize(0, '#0B84FF'),
-  },
   text: {
     fontSize: 14,
-    color: 'white',
+    color: '#fff',
   },
 });

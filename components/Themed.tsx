@@ -43,7 +43,7 @@ export function View(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
-    'background'
+    'gray6'
   );
 
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
@@ -51,9 +51,9 @@ export function View(props: ViewProps) {
 
 export function TextInput(props: TextInputProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
-  const backgroundColorBase = useThemeColor(
+  const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
-    'tint'
+    'gray5'
   );
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
 
@@ -61,7 +61,7 @@ export function TextInput(props: TextInputProps) {
     <DefaultTextInput
       style={[
         {
-          backgroundColor: transparentize(0.8, backgroundColorBase),
+          backgroundColor,
           color,
           marginVertical: 7,
           borderRadius: 20,

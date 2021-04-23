@@ -5,6 +5,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { Text, View } from '../components/Themed';
 
 import { RootStackParamList } from '../types';
+import Colors from '../constants/Colors';
+import useColorScheme from '../hooks/useColorScheme';
 import { useChatsQuery, ChatDataFragment } from '../codegen/generated/graphql';
 
 function Item({
@@ -14,8 +16,16 @@ function Item({
   chat: ChatDataFragment;
   onPress: () => void;
 }) {
+  const colorScheme = useColorScheme();
+
   return (
-    <TouchableOpacity style={styles.item} onPress={onPress}>
+    <TouchableOpacity
+      style={[
+        styles.item,
+        { borderBottomColor: colorScheme && Colors[colorScheme].gray4 },
+      ]}
+      onPress={onPress}
+    >
       <Text style={styles.title}>{chat.name}</Text>
       <Text style={styles.message}>
         {chat.lastMessage ? chat.lastMessage.text : 'No messages yet...'}
@@ -61,7 +71,6 @@ const styles = StyleSheet.create({
   item: {
     minWidth: '100%',
     padding: 20,
-    borderBottomColor: 'gray',
     borderBottomWidth: 1,
   },
   title: {

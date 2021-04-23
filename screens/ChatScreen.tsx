@@ -20,6 +20,8 @@ import {
   useSendMessageMutation,
 } from '../codegen/generated/graphql';
 import { RootStackParamList } from '../types';
+import useColorScheme from '../hooks/useColorScheme';
+import Colors from '../constants/Colors';
 
 
 type ChatScreenRouteProp = RouteProp<RootStackParamList, 'Chat'>;
@@ -63,6 +65,8 @@ export default function ChatScreen({ route, navigation }: Props) {
     setMessage('');
   };
 
+  const colorScheme = useColorScheme();
+
   const headerHeight = useHeaderHeight();
 
   return (
@@ -88,9 +92,9 @@ export default function ChatScreen({ route, navigation }: Props) {
           No messages yet. Say hi to {chatData?.chat.name}!
         </Text>
       )}
-      <View style={styles.form}>
+      <View style={styles.form} lightColor={Colors.light.gray7} darkColor={Colors.dark.gray7}>
         <TextInput
-          placeholder="Send message..."
+          placeholder="Send a message..."
           value={message}
           onChangeText={setMessage}
           returnKeyType="send"
@@ -101,6 +105,7 @@ export default function ChatScreen({ route, navigation }: Props) {
         <Ionicons
           name="md-send"
           onPress={handleSubmit}
+          color={Colors[colorScheme].blue}
           style={styles.iconButton}
         />
       </View>
@@ -134,7 +139,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     padding: 5,
     borderRadius: 30,
-    color: 'blue',
   },
   text: {
     alignSelf: 'center',

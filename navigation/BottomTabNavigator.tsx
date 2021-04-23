@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Ionicons } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Button } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 
 import ChatsScreen from '../screens/ChatsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
@@ -26,7 +27,7 @@ export default function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       initialRouteName="Chats"
-      tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
+      tabBarOptions={{ activeTintColor: Colors[colorScheme].blue }}
     >
       <BottomTab.Screen
         name="Chats"
@@ -62,13 +63,18 @@ const ChatsStack = createStackNavigator<ChatsParamList>();
 
 function ChatsNavigator() {
   return (
-    <ChatsStack.Navigator>
-      <ChatsStack.Screen
-        name="ChatsScreen"
-        component={ChatsScreen}
-        options={{ headerTitle: 'Chats' }}
-      />
-    </ChatsStack.Navigator>
+    <>
+      <ChatsStack.Navigator>
+        <ChatsStack.Screen
+          name="ChatsScreen"
+          component={ChatsScreen}
+          options={{
+            headerTitle: 'Chats',
+            headerRight: () => <Button title="+" onPress={() => {}} />,
+          }}
+        />
+      </ChatsStack.Navigator>
+    </>
   );
 }
 
