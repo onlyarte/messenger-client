@@ -68,10 +68,7 @@ function ChatsNavigator() {
         <ChatsStack.Screen
           name="ChatsScreen"
           component={ChatsScreen}
-          options={{
-            headerTitle: 'Chats',
-            headerRight: () => <Button title="+" onPress={() => {}} />,
-          }}
+          options={{ headerTitle: 'Chats' }}
         />
       </ChatsStack.Navigator>
     </>

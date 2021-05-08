@@ -1,0 +1,5 @@
+query Users($query: String!) {
+  users(query: $query) {
+    ...UserData
+  }
+}

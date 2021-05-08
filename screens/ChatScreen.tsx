@@ -23,7 +23,6 @@ import { RootStackParamList } from '../types';
 import useColorScheme from '../hooks/useColorScheme';
 import Colors from '../constants/Colors';
 
-
 type ChatScreenRouteProp = RouteProp<RootStackParamList, 'Chat'>;
 
 type ChatsScreenNavigationProp = StackNavigationProp<
@@ -51,7 +50,11 @@ export default function ChatScreen({ route, navigation }: Props) {
     }
   }, [chatData?.chat]);
 
-  const { data: messagesData, refetch: refetchMessages } = useMessagesQuery({
+  const {
+    data: messagesData,
+    refetch: refetchMessages,
+    loading,
+  } = useMessagesQuery({
     variables: { chatId },
     pollInterval: 500,
   });
@@ -87,12 +90,16 @@ export default function ChatScreen({ route, navigation }: Props) {
         )}
         inverted
       />
-      {!messagesData?.messages.length && (
+      {!loading && !messagesData?.messages.length && (
         <Text style={styles.text}>
           No messages yet. Say hi to {chatData?.chat.name}!
         </Text>
       )}
-      <View style={styles.form} lightColor={Colors.light.gray7} darkColor={Colors.dark.gray7}>
+      <View
+        style={styles.form}
+        lightColor={Colors.light.gray7}
+        darkColor={Colors.dark.gray7}
+      >
         <TextInput
           placeholder="Send a message..."
           value={message}

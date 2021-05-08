@@ -1,0 +1,5 @@
+mutation StartChat($members: [ID!]!) {
+  startChat(members: $members) {
+    ...ChatData
+  }
+}

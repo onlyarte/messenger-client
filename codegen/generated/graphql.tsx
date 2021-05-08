@@ -208,11 +208,6 @@ export type User = {
   chats: Array<Chat>;
 };
 
-export type UserDataFragment = (
-  { __typename?: 'User' }
-  & Pick<User, '_id' | 'username' | 'fullName'>
-);
-
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -259,6 +254,19 @@ export type ChatDataFragment = (
     { __typename?: 'Message' }
     & MessageDataFragment
   )> }
+);
+
+export type StartChatMutationVariables = Exact<{
+  members: Array<Scalars['ID']> | Scalars['ID'];
+}>;
+
+
+export type StartChatMutation = (
+  { __typename?: 'Mutation' }
+  & { startChat: (
+    { __typename?: 'Chat' }
+    & ChatDataFragment
+  ) }
 );
 
 export type ChatsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -332,6 +340,24 @@ export type NewMessageSubscription = (
     { __typename?: 'Message' }
     & MessageDataFragment
   ) }
+);
+
+export type UserDataFragment = (
+  { __typename?: 'User' }
+  & Pick<User, '_id' | 'username' | 'fullName'>
+);
+
+export type UsersQueryVariables = Exact<{
+  query: Scalars['String'];
+}>;
+
+
+export type UsersQuery = (
+  { __typename?: 'Query' }
+  & { users: Array<(
+    { __typename?: 'User' }
+    & UserDataFragment
+  )> }
 );
 
 export const UserDataFragmentDoc = gql`
@@ -467,6 +493,39 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const StartChatDocument = gql`
+    mutation StartChat($members: [ID!]!) {
+  startChat(members: $members) {
+    ...ChatData
+  }
+}
+    ${ChatDataFragmentDoc}`;
+export type StartChatMutationFn = Apollo.MutationFunction<StartChatMutation, StartChatMutationVariables>;
+
+/**
+ * __useStartChatMutation__
+ *
+ * To run a mutation, you first call `useStartChatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useStartChatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [startChatMutation, { data, loading, error }] = useStartChatMutation({
+ *   variables: {
+ *      members: // value for 'members'
+ *   },
+ * });
+ */
+export function useStartChatMutation(baseOptions?: Apollo.MutationHookOptions<StartChatMutation, StartChatMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<StartChatMutation, StartChatMutationVariables>(StartChatDocument, options);
+      }
+export type StartChatMutationHookResult = ReturnType<typeof useStartChatMutation>;
+export type StartChatMutationResult = Apollo.MutationResult<StartChatMutation>;
+export type StartChatMutationOptions = Apollo.BaseMutationOptions<StartChatMutation, StartChatMutationVariables>;
 export const ChatsDocument = gql`
     query Chats {
   chats {
@@ -635,3 +694,38 @@ export function useNewMessageSubscription(baseOptions?: Apollo.SubscriptionHookO
       }
 export type NewMessageSubscriptionHookResult = ReturnType<typeof useNewMessageSubscription>;
 export type NewMessageSubscriptionResult = Apollo.SubscriptionResult<NewMessageSubscription>;
+export const UsersDocument = gql`
+    query Users($query: String!) {
+  users(query: $query) {
+    ...UserData
+  }
+}
+    ${UserDataFragmentDoc}`;
+
+/**
+ * __useUsersQuery__
+ *
+ * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useUsersQuery(baseOptions: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+      }
+export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+        }
+export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
+export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
+export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;

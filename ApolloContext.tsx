@@ -31,7 +31,7 @@ export function ApolloProvider({ children }: { children?: React.ReactNode }) {
 
     const wsLink = new WebSocketLink({
       uri: __DEV__
-        ? 'ws://192.168.0.102:4000'
+        ? 'ws://192.168.0.104:4000'
         : 'ws://remessage-api.herokuapp.com',
       options: {
         reconnect: true,
